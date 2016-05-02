@@ -1,0 +1,20 @@
+README
+Submitted by yl2458, dj327, wf85
+Text file ‘edges.txt’ is preprocessed by a java file, the hashmap is used to store each source node and corresponding neighbor node. After processed, each single line of the output file is in the format "source degree neighbor-1, neighbor-2, ... , neighbor-n". The preprocessed input file is stored as a S3 file ‘https://s3.amazonaws.com/edu-cornell-cs- cs5300s16-yl2458-pagerank/input/nodesForProject.txt’.
+Netid: yl2458 rejectMin: 0.76878 rejectLimit: 0.77878 number of edges: 7524719
+2. Overall Structure
+1) simple page rank
+The simple page rank program processes the filtered file.
+For each node, the map task emits to each neighbor node with (its own page rank value) / (out degree of its node). In the reduce task, the graph is reconstructed and the page rank value from neighbor is added as new page rank value. Besides, residual error is computed in the reduce task. A Hadoop counter is used here to accumulate the overall residual errors of the whole graph. To keep the precision of the result, we multiply a number 100,000,000 for each node’s residual error before accumulating.
+2) The blocked page rank
+There are 5 classes in the blocked page rank package.’webNode.java’ includes all the key parameters (node ID, PageRank value, outgoing degrees and nodes which outgoing links point to) of a node in the web graph. ‘blockPageRank_map’ hard codes the content of file ‘blocks.txt’. The function ‘map’ parses received values into the parameters. It also emits the link relationships based on whether or not the nodes are in the same block. Plus, it provides a function to check the corresponding block ID of a node. ‘blockPageRank_reduce’ iteratively computes the residual error in the block until it is less than the threshold 0.001. ’accumulator’ is used as a counter to accumulate the residual error of different blocks over the whole graph. It also accumulate number of iteration times of different blocks so that we can compute the average number if iterations in each pass. ‘blockPageRank’ is responsible for coordinating map and reduce processes. It also does input and output work.
+3) The Guass-Seidel page rank
+All the difference between this and blocked page rank is the IterateBlockOnce() function. Guass-Seidel uses the updated PageRank values in this iteration instead of the ones in last iteration to compute current PageRank values.
+4) The random page rank
+The random page rank is different from blocked page rank by assigning block ID by (nodeID mod 68). The random partition took 22 iteration to converge.
+3. How to deploy the program
+Copy the JAR file (simplePageRank/blockPageRankPrint/randomPartitionPageRank) to amazon s3. In the EMR, upload the jar file
+Run simple simplePageRank/simplePageRank s3://edu-cornell-cs- cs5300s16-yl2458-pagerank/input/ s3://edu-cornell-cs-cs5300s16- yl2458-pagerank/outputSimple/
+Run block blockPageRankPrint/blockPageRank s3://edu-cornell-cs- cs5300s16-yl2458-pagerank/input/ s3://edu-cornell-cs-cs5300s16- yl2458-pagerank/b3output/
+Run Guass gaussPageRank.gaussPageRank s3://edu-cornell-cs- cs5300s16-yl2458-pagerank/input/ s3://edu-cornell-cs-cs5300s16- yl2458-pagerank/outputg4/
+Run random randomBlockPartition/randomBlockPartition s3://edu- cornell-cs-cs5300s16-yl2458-pagerank/input/ s3://edu-cornell- cs-cs5300s16-yl2458-pagerank/output/
