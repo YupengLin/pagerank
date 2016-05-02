@@ -1,8 +1,7 @@
-package Prefilter;
+
 import java.io.*;
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,14 +9,12 @@ import java.util.Collections;
 public class WordPreProcessing {
 	
 	private Hashtable<Integer, List<Integer>> graph = new Hashtable<>();
-	private String fileName = "edges.txt";
+	private String fileName = "/Users/jd/Documents/courses_16sp/cs5300/proj2/edges.txt";
 	/**
 	 *  change to your ID
 	 */
 	private double fromNetID = 0.8542;
 	public  void readFile() throws IOException  {
-		//Hashtable<String, Integer>  freq = new Hashtable<>();
-        //String fileName = "";
 
         BufferedReader br = null;
 		try {
@@ -66,17 +63,14 @@ public class WordPreProcessing {
 	public boolean selectInputLine(double x) {
 		
 		double rejectMin = 0.9 * this.fromNetID;
-		double rejectLimit = rejectMin +  0.01;
-		//System.out.println(rejectMin);
-		//System.out.println(rejectLimit);
-		
+		double rejectLimit = rejectMin +  0.01;		
 		return   ( ((x >= rejectMin) && (x < rejectLimit)) ? false : true );
 	}
 	
 	
 	public void writeFile() throws IOException {
 		BufferedWriter output = null;
-		File file = new File("nodes.txt");
+		File file = new File("/Users/jd/Documents/courses_16sp/cs5300/proj2/nodes.txt");
 		 output = new BufferedWriter(new FileWriter(file));
         try {
            
@@ -84,17 +78,26 @@ public class WordPreProcessing {
             List<Integer> nodeIDs = new ArrayList<Integer>(keys);
             
             Collections.sort(nodeIDs);
-            float initRank = (float) 1.0 /  (float)nodeIDs.size();
+            float initRank = (float) 1.000000 /  (float)nodeIDs.size();
             for(Integer key : nodeIDs) {
             	List<Integer> adjNodes = graph.get(key);
             	String singleLine = "";
             	singleLine += key + " ";
-            	singleLine += String.format("%.15f", initRank);
+            	//singleLine += String.format("%.15f", initRank);
+            	singleLine += initRank;
             	singleLine += " ";
+            	String value = "";
             	for(int adjnode : adjNodes) {
-            		singleLine += adjnode;
-            		singleLine += ",";
+            		value += adjnode;
+            		value += ",";
             	}
+            	String value2 = value;
+            	int size = 0;
+            	if (value.trim().length() != 0) {
+            		size = value.split(",").length;
+            	} 
+            	
+            	singleLine += size + " " + value2;
             	singleLine = singleLine.substring(0, singleLine.length() - 1);
             	singleLine += "\n";
             	output.write(singleLine);
@@ -113,7 +116,7 @@ public class WordPreProcessing {
        process.readFile();
        process.writeFile();
 
-       //System.out.println(process.selectInputLine(0.769));
+
     }
 	
 	
