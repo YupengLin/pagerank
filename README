@@ -1,6 +1,6 @@
 README
 Submitted by yl2458, dj327, wf85
-Text file ‘edges.txt’ is preprocessed by a java file, the hashmap is used to store each source node and corresponding neighbor node. After processed, each single line of the output file is in the format "source degree neighbor-1, neighbor-2, ... , neighbor-n". The preprocessed input file is stored as a S3 file ‘https://s3.amazonaws.com/edu-cornell-cs- cs5300s16-yl2458-pagerank/input/nodesForProject.txt’.
+Text file ‘edges.txt’ is preprocessed by a java file, the hashmap is used to store each source node and corresponding neighbor node. After processed, each single line of the output file is in the format "source degree neighbor-1, neighbor-2, ... , neighbor-n". The preprocessed input file is stored as a S3 file ‘https://s3.amazonaws.com/edu-cornell-cs-cs5300s16-yl2458-pagerank/input/nodesForProject.txt’.
 Netid: yl2458 rejectMin: 0.76878 rejectLimit: 0.77878 number of edges: 7524719
 2. Overall Structure
 1) simple page rank
